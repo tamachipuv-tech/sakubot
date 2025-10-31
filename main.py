@@ -30,6 +30,17 @@ class RecruitmentView(discord.ui.View):
             self.participants.append(user)
             await interaction.response.send_message(f"{user.mention} が参加！（{len(self.participants)}/{self.max_participants}）")
 
+    @discord.ui.button(label="👥 参加者一覧", style=discord.ButtonStyle.secondary)
+    async def show_list(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if len(self.participants) == 0:
+            await interaction.response.send_message("まだ誰も参加していません！", ephemeral=True)
+        else:
+            members = "\n".join([f"- {user.mention}" for user in self.participants])
+            await interaction.response.send_message(
+                f"**現在の参加者（{len(self.participants)}/{self.max_participants}）**\n{members}",
+                ephemeral=True
+            )
+
     @discord.ui.button(label="🛑 取り消し", style=discord.ButtonStyle.danger)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user != self.author:
